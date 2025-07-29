@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOTL Gaming</title>
+  <style>
+    body {
+      background-color: #0a0a0a;
+      background-image: 
+        radial-gradient(circle at 25% 25%, #1a0000 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, #0d0d0d 0%, transparent 50%);
+      color: #ffffff;
+      font-family: 'Segoe UI', 'Arial Black', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      font-weight: 600;
+    }
+
+    .sidebar {
+      width: 200px;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+      background-image: 
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 1rem;
+      border-right: 3px solid #ff0000;
+      box-shadow: 3px 0 10px rgba(255, 0, 0, 0.3);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar img {
+      width: 120px;
+      border-radius: 50%;
+      margin-bottom: 2rem;
+      border: 3px solid #ff0000;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    }
+
+    .backdrop {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .tab-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tab-buttons button {
+      padding: 0.8rem 1.2rem;
+      background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+      color: #ffffff;
+      border: 2px solid #ff0000;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-buttons button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,0,0,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .tab-buttons button:hover::before {
+      left: 100%;
+    }
+
+    .tab-buttons button:hover {
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .main-content {
+      margin-left: 200px;
+      width: calc(100% - 200px);
+      padding: 2rem;
+    }
+
+    .landing {
+      text-align: center;
+      padding: 4rem 1rem;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('MOTL_Banner.png') no-repeat center center;
+      background-size: cover;
+      animation: fadeIn 1s ease-in-out;
+      border: 2px solid rgba(255, 0, 0, 0.3);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .landing::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255,0,0,0.05) 2px,
+        rgba(255,0,0,0.05) 4px
+      );
+      border-radius: 12px;
+    }
+
+    .landing h1 {
+      font-size: 2.8rem;
+      margin-top: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      color: #ffffff;
+    }
+
+    .landing p {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      color: #ffffff;
+    }
+
+    .landing a {
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #ffffff;
+      padding: 0.8rem 2rem;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    }
+
+    .landing a:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+      color: #ff0000;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    }
+
+    .tabs {
+      max-width: 1200px;
+      margin-top: 2rem;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-content h2 {
+      color: #ff0000;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 3px solid #ff0000;
+      padding-bottom: 0.5rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 2px solid #ff0000;
+      position: relative;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(255,0,0,0.05) 3px,
+        rgba(255,0,0,0.05) 6px
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
+      border-color: #ffffff;
+    }
+
+    .player-profile-pic {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #ff0000;
+      margin: 0 auto 1rem auto;
+      display: block;
+      object-fit: cover;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    }
+
+    .card h3 {
+      color: #ffffff;
+      font-size: 1.4rem;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .card p {
+      color: #cccccc;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+    }
+
+    .social-links {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255,0,0,0.95) 0%, rgba(0,0,0,0.95) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.4s ease;
+      border-radius: 12px;
+    }
+
+    .card:hover .social-links {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .social-links a {
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 2px solid #ffffff;
+      border-radius: 6px;
+      transition: all 0.3s;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    .social-links a:hover {
+      background: #ffffff;
+      color: #ff0000;
+      transform: scale(1.1);
+    }
+
+    .tab-content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .tab-content li {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      padding: 1rem;
+      margin: 0.8rem 0;
+      border-left: 4px solid #ff0000;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+
+    .tab-content li:hover {
+      background: linear-gradient(135deg, #2a2a2a 0%, #1d1d1d 100%);
+      transform: translateX(10px);
+    }
+
+    .tab-content a {
+      color: #ff0000;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .tab-content a:hover {
+      color: #ffffff;
+    }
+
+    /* Media Grid Styles */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .media-section {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 2px solid #ff0000;
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(255,0,0,0.03) 3px,
+        rgba(255,0,0,0.03) 6px
+      );
+    }
+
+    .media-section h3 {
+      color: #ff0000;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .media-item {
+      background: linear-gradient(135deg, #2a2a2a 0%, #1d1d1d 100%);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .media-item:hover {
+      border-color: #ff0000;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 0, 0, 0.2);
+    }
+
+    .media-placeholder {
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(45deg, #333 0%, #555 100%);
+      border: 2px dashed #ff0000;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cccccc;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .video-placeholder {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(45deg, #1a1a1a 0%, #333 100%);
+      border: 2px dashed #ff0000;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #cccccc;
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+   
+    .discord-button {
+  background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+  color: #ffffff !important;
+  padding: 1.2rem 3rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer !important;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  margin: 0.5rem;
+  text-decoration: none !important;
+  display: inline-block;
+  box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+  z-index: 10;
+  pointer-events: auto;
+}
+
+    .video-placeholder::before {
+      content: '▶';
+      font-size: 3rem;
+      color: #ff0000;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Merch Styles */
+    .merch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .merch-item {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 2px solid #ff0000;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .merch-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(255,0,0,0.05) 3px,
+        rgba(255,0,0,0.05) 6px
+      );
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .merch-item:hover::before {
+      opacity: 1;
+    }
+
+    .merch-item:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 30px rgba(255, 0, 0, 0.3);
+      border-color: #ffffff;
+    }
+
+    .merch-image {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(45deg, #333 0%, #555 100%);
+      border: 2px dashed #ff0000;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cccccc;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .merch-price {
+      color: #ff0000;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+
+    .buy-button {
+      background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+      color: #ffffff;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .buy-button:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+      color: #ff0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    }
+
+    .buy-button:hover {
+      background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+      color: #ff0000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+    }
+
+    /* Community Tab Special Effects */
+    .community-btn {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #ff0000 0%, #ff6600 50%, #ff0000 100%) !important;
+      animation: pulseGlow 2s infinite alternate;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.6) !important;
+    }
+
+    .community-btn::after {
+      content: '✨';
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      animation: sparkle 1.5s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 40px rgba(255, 0, 0, 0.3);
+      }
+      100% {
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.8), 0 0 60px rgba(255, 0, 0, 0.5);
+      }
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+      50% { opacity: 0.3; transform: translateY(-50%) scale(1.2); }
+    }
+
+    /* Community Page Styles */
+    .community-hero {
+      background: linear-gradient(135deg, rgba(255,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%);
+      border: 3px solid #ff0000;
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .community-hero::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, #ff0000, #ff6600, #ff0000, #cc0000);
+      z-index: -1;
+      border-radius: 20px;
+      animation: borderFlow 3s linear infinite;
+    }
+
+    .community-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(255,0,0,0.1) 5px,
+        rgba(255,0,0,0.1) 10px
+      );
+      animation: slidePattern 4s linear infinite;
+    }
+
+    @keyframes borderFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes slidePattern {
+      0% { transform: translateX(-10px); }
+      100% { transform: translateX(10px); }
+    }
+
+    .community-title {
+      font-size: 3rem;
+      background: linear-gradient(45deg, #ff0000, #ff6600, #ffffff, #ff0000);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .community-subtitle {
+      font-size: 1.3rem;
+      color: #ffffff;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .discord-button {
+      background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+      color: #ffffff;
+      padding: 1.2rem 3rem;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      margin: 0.5rem;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+    }
+
+    .discord-button::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    .discord-button:hover::before {
+      transform: translateX(100%);
+    }
+
+    .discord-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 35px rgba(88, 101, 242, 0.6);
+    }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .social-card {
+      background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+      border: 2px solid #ff0000;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    .social-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, rgba(255,0,0,0.1), transparent, rgba(255,0,0,0.1));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .social-card:hover::before {
+      opacity: 1;
+    }
+
+    .social-card:hover {
+      transform: translateY(-10px) rotate(1deg);
+      box-shadow: 0 20px 40px rgba(255, 0, 0, 0.3);
+      border-color: #ffffff;
+    }
+
+    .social-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .social-card:nth-child(1) .social-icon { animation-delay: 0s; }
+    .social-card:nth-child(2) .social-icon { animation-delay: 0.5s; }
+    .social-card:nth-child(3) .social-icon { animation-delay: 1s; }
+    .social-card:nth-child(4) .social-icon { animation-delay: 1.5s; }
+
+    .floating-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-emoji {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.7;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .floating-emoji:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .floating-emoji:nth-child(2) { left: 20%; animation-delay: 2s; }
+    .floating-emoji:nth-child(3) { left: 30%; animation-delay: 4s; }
+    .floating-emoji:nth-child(4) { left: 40%; animation-delay: 6s; }
+    .floating-emoji:nth-child(5) { left: 50%; animation-delay: 1s; }
+    .floating-emoji:nth-child(6) { left: 60%; animation-delay: 3s; }
+    .floating-emoji:nth-child(7) { left: 70%; animation-delay: 5s; }
+    .floating-emoji:nth-child(8) { left: 80%; animation-delay: 7s; }
+
+    @keyframes fadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 3px solid #ff0000;
+      }
+      
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+      
+      .tab-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .media-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .merch-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="IMG_6916.png" alt="Logo">
+    <div class="tab-buttons">
+      <button onclick="showTab('news')">News</button>
+      <button onclick="showTab('media')">Media</button>
+      <button onclick="showTab('season')">This Season</button>
+      <button onclick="showTab('roster')">Roster</button>
+      <button onclick="showTab('merch')">Merch</button>
+      <button onclick="showTab('about')">About Us</button>
+      <button onclick="showTab('community')" class="community-btn">Join Community</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Landing Page -->
+    <section class="landing">
+      <h1 class="backdrop">Welcome to Meat On The Ledge 🎮</h1>
+      <p class="backdrop">You cant beat the meat but you can beat your meat</p>
+    </section>
+
+    <!-- Tab Contents -->
+    <div class="tabs">
+      <div id="roster" class="tab-content">
+        <h2>👥 MOTL main team</h2>
+        <div class="grid">
+          <div class="card">
+            <img src="IMG_6916.png" alt="Kahzine" class="player-profile-pic">
+            <h3>Kahzine</h3>
+            <p>Role: IGL</p>
+            <p>Main: Watson</p>
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://twitch.tv/kahzine" target="_blank">Twitch</a>
+              <a href="https://twitter.com/kahzine" target="_blank">Twitter</a>
+              <a href="https://youtube.com/@kahzine" target="_blank">YouTube</a>
+            </div>
+          </div>
+          <div class="card">
+            <img src="IMG_6916.png" alt="Almanymede" class="player-profile-pic">
+            <h3>Almanymede</h3>
+            <p>Role: Fragger</p>
+            <p>Main: Whoever</p>
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://twitch.tv/almanymede" target="_blank">Twitch</a>
+              <a href="https://twitter.com/almanymede" target="_blank">Twitter</a>
+              <a href="https://instagram.com/almanymede" target="_blank">Youtube</a>
+            </div>
+          </div>
+          <div class="card">
+            <img src="IMG_6916.png" alt="An7artic" class="player-profile-pic">
+            <h3>An7artic</h3>
+            <p>Role: Anchor</p>
+            <p>Main: Bangalore</p>
+            
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://twitch.tv/an7artic" target="_blank">Twitch</a>
+              <a href="https://twitter.com/an7artic" target="_blank">Twitter</a>
+              <a href="https://tiktok.com/@an7artic" target="_blank">Youtube</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <h2>👥 MOTL Console</h2>
+        <br>
+        <div class="grid">
+          <div class="card">
+            <img src="IMG_6916.png" alt="ThatsFa1r" class="player-profile-pic">
+            <h3>ThatsFa1r</h3>
+            <p>Role: IGL</p>
+            <p>Main: Crypto</p>
+            
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://www.twitch.tv/fairestone617" target="_blank">Twitch</a>
+              <a href="https://twitter.com/thatsfa1r" target="_blank">Twitter</a>
+              <a href="https://youtube.com/@thatsfa1r" target="_blank">YouTube</a>
+            </div>
+          </div>
+          <div class="card">
+            <img src="IMG_6916.png" alt="Atrain" class="player-profile-pic">
+            <h3>Atrain</h3>
+            <p>Role: Fragger</p>
+            <p>Main: Wraith</p>
+            
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://twitch.tv/atrain" target="_blank">Twitch</a>
+              <a href="https://twitter.com/atrain" target="_blank">Twitter</a>
+              <a href="https://instagram.com/atrain" target="_blank">Youtube</a>
+            </div>
+          </div>
+          <div class="card">
+            <img src="IMG_6916.png" alt="DDuckyG" class="player-profile-pic">
+            <h3>DDuckyG</h3>
+            <p>Role: Anchor</p>
+            <p>Main: LIFELINE REZ ME</p>
+            
+            <h3>BIO</h3>
+            <p>Not too sure what he wants to put</p>
+            <div class="social-links">
+              <a href="https://twitch.tv/dduckyg" target="_blank">Twitch</a>
+              <a href="https://twitter.com/dduckyg" target="_blank">Twitter</a>
+              <a href="https://discord.gg/dduckyg" target="_blank">Discord</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="community" class="tab-content hidden">
+        <div class="floating-elements">
+          <div class="floating-emoji">🎮</div>
+          <div class="floating-emoji">🔥</div>
+          <div class="floating-emoji">⚡</div>
+          <div class="floating-emoji">🎯</div>
+          <div class="floating-emoji">🏆</div>
+          <div class="floating-emoji">💯</div>
+          <div class="floating-emoji">🚀</div>
+          <div class="floating-emoji">🎊</div>
+        </div>
+        
+        <div class="community-hero">
+          <h2 class="community-title">JOIN THE MOTL COMMUNITY</h2>
+          <p class="community-subtitle">Connect with fellow legends and dominate together!</p>
+          <a href="https://discord.gg/RaP4F8Wjtj" target="_blank" class="discord-button">
+             🎮 JOIN DISCORD NOW 🎮
+             </a>
+
+             <a  class="discord-button" target="_blank" href="https://www.google.com/imgres?q=error%20404&imgurl=https%3A%2F%2Fi0.wp.com%2Flearn.onemonth.com%2Fwp-content%2Fuploads%2F2017%2F08%2F1-10.png%3Ffit%3D845%252C503%26ssl%3D1&imgrefurl=https%3A%2F%2Flearn.onemonth.com%2Fwhat-is-a-404-page%2F&docid=Ncjoa7J763CFqM&tbnid=UP93TQFHMXEWhM&vet=12ahUKEwihuq3dtOGOAxUW48kDHc5dOxIQM3oECB8QAA..i&w=845&h=503&hcb=2&ved=2ahUKEwihuq3dtOGOAxUW48kDHc5dOxIQM3oECB8QAA">
+             📋 Join the Team 📋
+             </a>
+         </div>
+
+        <div class="social-grid">
+          <div class="social-card">
+            <div class="social-icon">💬</div>
+            <h3>Discord Community</h3>
+            <p>Chat with teammates, find scrims, and share epic moments in our active Discord server.</p>
+          </div>
+          
+          <div class="social-card">
+            <div class="social-icon">📺</div>
+            <h3>Live Streams</h3>
+            <p>Watch live gameplay, learn pro strategies, and interact with MOTL players on Twitch.</p>
+          </div>
+          
+          <div class="social-card">
+            <div class="social-icon">🏆</div>
+            <h3>Tournaments</h3>
+            <p>Participate in community tournaments and climb the ranks with exclusive MOTL events.</p>
+          </div>
+          
+          <div class="social-card">
+            <div class="social-icon">🎁</div>
+            <h3>Exclusive Perks</h3>
+            <p>Get early access to merch, behind-the-scenes content, and special community rewards.</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="about" class="tab-content hidden">
+        <h2>👻 About Meat on the Ledge</h2>
+        <p>
+         Established in canada in 1932 make sure to stay MOTL Minded
+        </p>
+      </div>
+
+      <div id="news" class="tab-content hidden">
+        <h2>📰 News</h2>
+        <p>Stay updated with the latest MOTL announcements, patches, and team news.</p>
+        <ul>
+          <li><strong>July 28:</strong> Website redesign complete!</li>
+          <li><strong>July 25:</strong> Team qualified for playoff round.</li>
+          <li><strong>July 20:</strong> MOTL Media team launched.</li>
+        </ul>
+      </div>
+
+      <div id="media" class="tab-content hidden">
+        <h2>📸 Media</h2>
+        <p>Check out our latest clips, memes, and stream highlights!</p>
+        
+        <div class="media-grid">
+          <div class="media-section">
+            <h3>📷 Pictures & Screenshots</h3>
+            <div class="media-item">
+              <div class="media-placeholder">Tournament Victory Screenshot</div>
+              <p>MOTL wins the championship match!</p>
+            </div>
+            <div class="media-item">
+              <div class="media-placeholder">Team Photo</div>
+              <p>Team photo from recent LAN event</p>
+            </div>
+            <div class="media-item">
+              <div class="media-placeholder">Epic Play Moment</div>
+              <p>Clutch 1v3 by Almanymede</p>
+            </div>
+            <div class="media-item">
+              <div class="media-placeholder">Behind the Scenes</div>
+              <p>Team preparing for scrimmage</p>
+            </div>
+          </div>
+          
+          <div class="media-section">
+            <h3>🎥 YouTube Videos</h3>
+            <div class="media-item">
+              <div class="video-placeholder">
+                <div>Best Plays Compilation</div>
+              </div>
+              <p>Top 10 MOTL plays of the season</p>
+            </div>
+            <div class="media-item">
+              <div class="video-placeholder">
+                <div>Team Interview</div>
+              </div>
+              <p>Getting to know the MOTL roster</p>
+            </div>
+            <div class="media-item">
+              <div class="video-placeholder">
+                <div>Strategy Breakdown</div>
+              </div>
+              <p>How MOTL dominated on World's Edge</p>
+            </div>
+          </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+          <a href="https://www.twitch.tv/fairestone617" style="display: inline-block; background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%); color: #ffffff; padding: 1rem 2rem; text-decoration: none; font-weight: bold; border-radius: 8px; text-transform: uppercase; letter-spacing: 1px;">Check out our best streamer</a>
+        </div>
+      </div>
+
+      <div id="merch" class="tab-content hidden">
+        <h2>🛍️ MOTL Merchandise</h2>
+        <p>Rep the MOTL brand with our exclusive gaming gear!</p>
+        
+        <div class="merch-grid">
+          <div class="merch-item">
+            <div class="merch-image">MOTL Logo T-Shirt</div>
+            <h3>MOTL Gaming Tee</h3>
+            <p>Premium cotton t-shirt with official MOTL logo</p>
+            <div class="merch-price">$24.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+          
+          <div class="merch-item">
+            <div class="merch-image">MOTL Gaming Hoodie</div>
+            <h3>MOTL Hoodie</h3>
+            <p>Cozy hoodie perfect for those late-night gaming sessions</p>
+            <div class="merch-price">$49.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+          
+          <div class="merch-item">
+            <div class="merch-image">MOTL Gaming Cap</div>
+            <h3>MOTL Snapback</h3>
+            <p>Adjustable snapback hat with embroidered MOTL logo</p>
+            <div class="merch-price">$19.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+          
+          <div class="merch-item">
+            <div class="merch-image">MOTL Gaming Mouse Pad</div>
+            <h3>MOTL Mouse Pad</h3>
+            <p>Large gaming mouse pad with MOTL team design</p>
+            <div class="merch-price">$14.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+          
+          <div class="merch-item">
+            <div class="merch-image">MOTL Team Jersey</div>
+            <h3>Official Team Jersey</h3>
+            <p>Professional esports jersey worn by the MOTL team</p>
+            <div class="merch-price">$59.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+          
+          <div class="merch-item">
+            <div class="merch-image">MOTL Sticker Pack</div>
+            <h3>MOTL Sticker Pack</h3>
+            <p>Collection of vinyl stickers featuring MOTL designs</p>
+            <div class="merch-price">$9.99</div>
+            <button class="buy-button">Buy Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="season" class="tab-content hidden">
+        <h2>🏆 This Season</h2>
+        <p>Keep up with our progress in the league!</p>
+        <ul>
+          <li>Week 1: Win vs. Clan XYZ - 2-0</li>
+          <li>Week 2: Loss vs. ProTeamABC - 1-2</li>
+          <li>Week 3: Upcoming match vs. TheSweats</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      const contents = document.querySelectorAll('.tab-content');
+      contents.forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(tabId);
+      if (target) target.classList.add('active');
+    }
+
+    // Show roster by default
+    document.addEventListener('DOMContentLoaded', () => {
+      showTab('roster');
+    });
+  </script>
+</body>
+</html>
